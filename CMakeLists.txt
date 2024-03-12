@@ -19,10 +19,16 @@ set(PROJECT_SOURCES
         qml.qrc
 )
 
+set(PROJECT_HEADERS
+        usersetting.h
+        settingreader.h
+)
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(airplane-seat-control
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ${PROJECT_HEADERS}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET airplane-seat-control APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -32,12 +38,14 @@ else()
     if(ANDROID)
         add_library(airplane-seat-control SHARED
             ${PROJECT_SOURCES}
+            ${PROJECT_HEADERS}
         )
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
         add_executable(airplane-seat-control
           ${PROJECT_SOURCES}
+          ${PROJECT_HEADERS}
         )
     endif()
 endif()
