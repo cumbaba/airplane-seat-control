@@ -4,6 +4,7 @@
 #include <QQmlContext>
 
 #include "settingreader.h"
+#include "usersettinglistmodel.h"
 
 int main(int argc, char *argv[]) {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -21,23 +22,15 @@ int main(int argc, char *argv[]) {
       },
       Qt::QueuedConnection);
 
-  auto readData = SettingReader::loadSettings();
+  SettingListModel model;
+  model.setModelData(SettingReader::loadSettings());
 
+  QObject::connect(&app, &QGuiApplication::aboutToQuit, [&model]() {
+    SettingReader::saveSettings(model.getModelData());
+  });
+
+  engine.rootContext()->setContextProperty("settingListModel", &model);
   engine.load(url);
-
-  QList<UserSetting> existingSettings;
-  for (auto &setting : readData) {
-    existingSettings.append(setting);
-
-    qDebug() << "Read Profile : Foot=" << setting.foot
-             << ", Back=" << setting.back;
-  }
-
-  UserSetting newSetting;
-  newSetting.back = 42;
-  existingSettings.append(newSetting);
-
-  SettingReader::saveSettings(existingSettings);
 
   return app.exec();
 }
