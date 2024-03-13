@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
   model.setModelData(SettingReader::loadSettings());
 
   QObject::connect(&app, &QGuiApplication::aboutToQuit, [&model]() {
+    // disconnect
     SettingReader::saveSettings(model.getModelData());
   });
 

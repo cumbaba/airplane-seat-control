@@ -5,39 +5,19 @@ import QtQuick.Controls 2.15
 Window {
     width: 640
     height: 480
+
+    minimumWidth: 440
+    minimumHeight: 400
+
     visible: true
     title: qsTr("Airplane Seat Control")
 
-    ListView {
-        id: modelContainerList
-
-        anchors.left: parent.left
-        width: 200
-        height: 200
-        model: settingListModel
-
-        delegate: TextEdit {
-
-            text: model.display.head
-
-            onTextChanged: {
-                model.display.head = text
-            }
-        }
-
-        currentIndex: settingComboBox.currentIndex
-    }
-
     Rectangle {
-        width: 220
+
+        width: 440
         height: 400
 
-        anchors {
-            verticalCenter: parent.verticalCenter
-            right: parent.right
-
-            rightMargin: 10
-        }
+        anchors.centerIn: parent
 
         border {
             color: "green"
@@ -46,11 +26,17 @@ Window {
 
         Column {
             padding: 10
+            width: 350
+
+            anchors.horizontalCenter: parent.horizontalCenter
 
             Row {
                 id: modelSelector
 
                 height: settingComboBox.height
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                spacing: 50
 
                 Label {
                     width: 50
@@ -60,6 +46,8 @@ Window {
 
                     color: "black"
                     text: "Setting: "
+
+                    font.pixelSize: 20
 
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignLeft
@@ -89,24 +77,23 @@ Window {
                 }
             }
 
-            Row {
+
+            Button {
                 height: 40
+                width: 300
 
-                Button {
-                    width: 200
-                    height: parent.height
+                anchors.horizontalCenter: parent.horizontalCenter
 
-                    contentItem: IconLabel {
-                        text: "Add New"
-                    }
+                contentItem: IconLabel {
+                    text: "Add New"
+                }
 
-                    background.opacity: pressed ? 0.1 : 1
+                background.opacity: pressed ? 0.1 : 1
 
-                    onClicked: {
-                        settingContainer.save_current_setting()
-                        settingComboBox.currentIndex = settingListModel.rowCount(
-                                    ) - 1
-                    }
+                onClicked: {
+                    settingContainer.save_current_setting()
+                    settingComboBox.currentIndex = settingListModel.rowCount(
+                                ) - 1
                 }
             }
 
@@ -116,15 +103,7 @@ Window {
                 property var settingToModify: undefined
 
                 height: 300
-                width: 200
-
-                Rectangle {
-                    border.color: "red"
-                    border.width: 1
-
-                    opacity: 0
-                    anchors.fill: parent
-                }
+                width: parent.width
 
                 // exclude the is_head_attached flag
                 model: 4
@@ -167,7 +146,7 @@ Window {
                     }
 
                     height: 70
-                    width: 200
+                    width: settingContainer.width
 
                     Label {
                         id: label
@@ -181,7 +160,9 @@ Window {
                         }
 
                         color: "black"
-                        text: get_label() + " "
+
+                        font.pixelSize: 20
+                        text: get_label() + ":"
 
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignLeft
@@ -203,13 +184,13 @@ Window {
                     CheckBox {
                         id: checkbox
 
-                        width: 20
-                        height: 30
+                        width: 30
+                        height: 40
 
                         anchors {
                             verticalCenter: parent.verticalCenter
                             right: valueSlider.left
-                            rightMargin: 10
+                            rightMargin: 20
                         }
 
                         visible: is_head_role
@@ -236,6 +217,7 @@ Window {
                             }
 
                             color: "black"
+                            font.pixelSize: 16
 
                             text: "(detached)"
                         }
@@ -250,7 +232,7 @@ Window {
                     Slider {
                         id: valueSlider
 
-                        width: 120
+                        width: 240
                         height: parent.height
 
                         anchors {
@@ -286,24 +268,6 @@ Window {
                     }
                 }
             }
-        }
-    }
-
-    Rectangle {
-        color: "transparent"
-
-        border {
-            color: "red"
-            width: 1
-        }
-
-        height: 400
-        width: 400
-
-        anchors {
-            verticalCenter: parent.verticalCenter
-            left: parent.left
-            leftMargin: 20
         }
     }
 }
