@@ -77,6 +77,7 @@ Window {
                     model: settingListModel
 
                     contentItem: Text {
+                        verticalAlignment: Text.AlignVCenter
                         text: settingSelector.currentIndex < 0 ? "Please select"
                                                                : "Setting "+ (settingSelector.currentIndex + 1)
                     }
@@ -99,7 +100,9 @@ Window {
 
                     anchors.verticalCenter: parent.verticalCenter
 
-                    contentItem: IconLabel {
+                    contentItem: Label {
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
                         font.pixelSize: 16
                         font.bold: true
                         color: favColor
@@ -224,7 +227,8 @@ Window {
                             rightMargin: 20
                         }
 
-                        contentItem: IconLabel {
+                        contentItem: Label {
+                            verticalAlignment: Text.AlignVCenter
                             text: headRestToggleButton.toggled ? "Attached" : "Detached"
                             font.pixelSize: 14
                             font.bold: true
