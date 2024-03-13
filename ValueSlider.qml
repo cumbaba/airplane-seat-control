@@ -88,7 +88,7 @@ Slider {
         border.color: "#9CA1B1"
 
         Label {
-            text: (stepSize === 1 ? value : value.toFixed(1)) + unit
+            text: value + unit
 
             anchors {
                 horizontalCenter: parent.horizontalCenter

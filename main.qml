@@ -57,8 +57,7 @@ Window {
 
                     contentItem: Text {
                         text: settingComboBox.currentIndex
-                              < 0 ? "Select" : "Setting "
-                                    + (settingComboBox.currentIndex + 1)
+                              < 0 ? "Select" : "Setting " + (settingComboBox.currentIndex + 1)
                     }
 
                     delegate: ItemDelegate {
@@ -108,8 +107,8 @@ Window {
                 width: parent.width
 
                 spacing: 10
+                interactive: false
 
-                // exclude the is_head_attached flag
                 model: 4
 
                 function load_setting(modelIndex) {
@@ -118,7 +117,7 @@ Window {
 
                     if (settingToModify) {
                         itemAtIndex(0).setValue(settingToModify.head)
-                        itemAtIndex(0).setChecked(
+                        itemAtIndex(0).setHeadRestToggle(
                                     settingToModify.isHeadAttached)
                         itemAtIndex(1).setValue(settingToModify.back)
                         itemAtIndex(2).setValue(settingToModify.foot)
@@ -128,7 +127,7 @@ Window {
 
                 function save_current_setting() {
                     settingListModel.addSetting(itemAtIndex(0).value,
-                                                itemAtIndex(0).checked,
+                                                itemAtIndex(0).toggled,
                                                 itemAtIndex(1).value,
                                                 itemAtIndex(2).value,
                                                 itemAtIndex(3).value)
@@ -138,15 +137,15 @@ Window {
                     readonly property bool isHeadRole: index === 0
 
                     readonly property real value: valueSlider.value
-                    readonly property bool checked: !isHeadRole
-                                                    || checkbox.checked
+                    readonly property bool toggled: !isHeadRole
+                                                    || headRestToggleButton.toggled
 
                     function setValue(new_value) {
                         valueSlider.value = new_value
                     }
 
-                    function setChecked(is_checked) {
-                        checkbox.checked = is_checked
+                    function setHeadRestToggle(is_toggled) {
+                        headRestToggleButton.toggled = is_toggled
                     }
 
                     height: 70
@@ -187,38 +186,36 @@ Window {
                         }
                     }
 
-                    CheckBox {
-                        id: checkbox
+                    Button {
+                        id: headRestToggleButton
 
-                        width: 30
-                        height: 30
+                        property bool toggled: true
+
+                        width: 90
+                        height: 40
+
+                        visible: index === 0
 
                         anchors {
                             verticalCenter: parent.verticalCenter
                             right: valueSlider.left
-                            rightMargin: 60
+                            rightMargin: 20
                         }
 
-                        visible: isHeadRole
-                        checked: true
+                        contentItem: IconLabel {
+                            text: headRestToggleButton.toggled ? "Attached" : "Detached"
+                            font.pixelSize: 14
+                            font.bold: true
 
-                        contentItem: Rectangle {
-                            radius: 3
-                            anchors.fill: parent
-
-                            Label {
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                text: checkbox.checked ? "ON" : "OFF"
-                                font.pointSize: 20
-                                font.bold: true
-                                color: checkbox.checked ? "green" : "red"
-                            }
+                            color: headRestToggleButton.toggled ? "green" : "red"
                         }
 
-                        onCheckStateChanged: {
+
+                        onClicked: toggled = !toggled
+
+                        onToggledChanged: {
                             if (settingContainer.settingToModify) {
-                                settingContainer.settingToModify.isHeadAttached = checked
+                                settingContainer.settingToModify.isHeadAttached = toggled
                             }
                         }
                     }
@@ -234,12 +231,12 @@ Window {
                             right: parent.right
                         }
 
-                        enabled: !isHeadRole || checkbox.checked
+                        enabled: !isHeadRole || headRestToggleButton.toggled
 
                         from: 0
 
-                        to: isHeadRole ? 40 : (index === 1 || index === 2 ? 60 : (index === 3 ? 10 : 100))
-                        stepSize: index === 3 ? 0.1 : 1
+                        to: isHeadRole ? 40 : (index === 1
+                                               || index === 2 ? 60 : (index === 3 ? 10 : 100))
                         unit: index === 1 || index === 2 ? "°" : ""
 
                         value: to / 2
