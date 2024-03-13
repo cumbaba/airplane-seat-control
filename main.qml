@@ -26,9 +26,7 @@ Window {
             width: parent.width
 
             Row {
-                id: modelSelector
-
-                height: settingComboBox.height
+                height: settingSelector.height
 
                 spacing: 50
 
@@ -36,7 +34,7 @@ Window {
                     width: 50
                     height: parent.height
 
-                    anchors.verticalCenter: settingComboBox.verticalCenter
+                    anchors.verticalCenter: settingSelector.verticalCenter
 
                     color: favColor
                     text: "Setting: "
@@ -49,26 +47,24 @@ Window {
                 }
 
                 ComboBox {
-                    id: settingComboBox
+                    id: settingSelector
 
                     width: 150
 
                     model: settingListModel
 
-                    textRole: "index"
-
                     contentItem: Text {
-                        text: settingComboBox.currentIndex
-                              < 0 ? "Select" : "Setting " + (settingComboBox.currentIndex + 1)
+                        text: settingSelector.currentIndex
+                              < 0 ? "Please select" : "Setting " + (settingSelector.currentIndex + 1)
                     }
 
                     delegate: ItemDelegate {
                         width: ListView.view.width
                         text: "Setting " + (index + 1)
-                        palette.text: settingComboBox.palette.text
-                        palette.highlightedText: settingComboBox.palette.highlightedText
-                        font.bold: settingComboBox.currentIndex === index
-                        highlighted: settingComboBox.highlightedIndex === index
+                        palette.text: settingSelector.palette.text
+                        palette.highlightedText: settingSelector.palette.highlightedText
+                        font.bold: settingSelector.currentIndex === index
+                        highlighted: settingSelector.highlightedIndex === index
                     }
 
                     currentIndex: -1
@@ -96,7 +92,7 @@ Window {
 
                     onClicked: {
                         settingContainer.add_new_setting()
-                        settingComboBox.currentIndex = settingListModel.rowCount(
+                        settingSelector.currentIndex = settingListModel.rowCount(
                                     ) - 1
                     }
                 }
@@ -140,12 +136,12 @@ Window {
                     readonly property bool isHead: index === 0
                     readonly property bool isHardness: index === 3
 
-                    readonly property real value: valueSlider.value
+                    readonly property real value: slider.value
                     readonly property bool toggled: !isHead
                                                     || headRestToggleButton.toggled
 
                     function setValue(new_value) {
-                        valueSlider.value = new_value
+                        slider.value = new_value
                     }
 
                     function setHeadRestToggle(is_toggled) {
@@ -202,7 +198,7 @@ Window {
 
                         anchors {
                             verticalCenter: parent.verticalCenter
-                            right: valueSlider.left
+                            right: slider.left
                             rightMargin: 20
                         }
 
@@ -224,7 +220,7 @@ Window {
                     }
 
                     ValueSlider {
-                        id: valueSlider
+                        id: slider
 
                         width: 240
                         height: parent.height
@@ -240,8 +236,6 @@ Window {
 
                         to: isHead ? 40 : (isHardness ? 10 : 60)
                         unit: isHead || isHardness  ? "" : "°"
-
-                        value: to / 2
 
                         onValueChanged: {
                             if (settingContainer.settingToModify) {

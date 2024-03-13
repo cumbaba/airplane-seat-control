@@ -9,11 +9,9 @@ Slider {
     width: 240
     height: 50
 
-    from: 0
-    to: 100
     stepSize: 1
 
-    value: 50
+    value: to / 2
 
     Label {
         text: from + unit
