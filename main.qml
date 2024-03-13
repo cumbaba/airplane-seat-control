@@ -33,6 +33,8 @@ Window {
                 ListView {
                     id: editorListView
 
+                    property bool suppressReload: false
+
                     // This component is only used for editing the model through the role names
                     visible: false
 
@@ -44,7 +46,7 @@ Window {
                     currentIndex: settingSelector.currentIndex
 
                     onCurrentIndexChanged: {
-                        if (currentIndex >= 0) {
+                        if (!suppressReload && currentIndex >= 0) {
                             settingContainer.load_setting()
                         }
                     }
@@ -108,7 +110,12 @@ Window {
 
                     onClicked: {
                         settingContainer.add_new_setting()
+
+                        // Switch the suppression flag to prevent the flickering when adding a new setting
+                        // Otherwise, the saved values will be reset for the sliders, which may cause a change in indicator
+                        editorListView.suppressReload = true
                         settingSelector.currentIndex = settingListModel.rowCount() - 1
+                        editorListView.suppressReload = false
                     }
                 }
             }
