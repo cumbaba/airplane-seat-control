@@ -3,19 +3,17 @@ import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
 Window {
-    width: 640
-    height: 480
+    width: 540
+    minimumWidth: 540
+    maximumWidth: 540
 
-    minimumWidth: 640
-    maximumWidth: 640
-
-    minimumHeight: 480
-    maximumHeight: 480
+    height: 440
+    minimumHeight: 440
+    maximumHeight: 440
 
     flags: Qt.FramelessWindowHint
 
     visible: true
-    title: qsTr("Airplane Seat Control")
 
     Rectangle {
         width: 440
