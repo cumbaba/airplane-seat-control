@@ -24,6 +24,7 @@ Slider {
 
         font.pixelSize: 16
         font.bold: true
+        color: favColor
     }
 
     Label {
@@ -37,6 +38,7 @@ Slider {
 
         font.pixelSize: 16
         font.bold: true
+        color: favColor
     }
 
     Rectangle {
@@ -94,8 +96,9 @@ Slider {
                 bottomMargin: 4
             }
 
-            font.pixelSize: 18
+            font.pixelSize: 28
             font.bold: true
+            color: favColor
             visible: pressed
         }
     }
