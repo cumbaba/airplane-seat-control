@@ -9,6 +9,7 @@ class SettingListModel : public QAbstractListModel {
   Q_OBJECT
 public:
   SettingListModel(QObject *parent = nullptr);
+  ~SettingListModel();
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 

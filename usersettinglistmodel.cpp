@@ -2,6 +2,11 @@
 
 SettingListModel::SettingListModel(QObject *parent) {}
 
+SettingListModel::~SettingListModel() {
+  while (!m_settings.empty())
+    delete m_settings.front(), m_settings.pop_front();
+}
+
 int SettingListModel::rowCount(const QModelIndex &parent) const {
   Q_UNUSED(parent)
   return m_settings.size();
@@ -38,7 +43,6 @@ void SettingListModel::addSetting(uint head, bool is_head_attached, uint back,
   s->setFoot(foot);
   s->setHardness(hardness);
   s->setIsHeadAttached(is_head_attached);
-
   m_settings.append(s);
 
   endInsertRows();

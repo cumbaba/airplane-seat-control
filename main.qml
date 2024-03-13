@@ -3,6 +3,8 @@ import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
 Window {
+    readonly property color favColor: "#05164D"
+
     width: 640
     height: 480
 
@@ -36,7 +38,7 @@ Window {
 
                     anchors.verticalCenter: settingComboBox.verticalCenter
 
-                    color: "black"
+                    color: favColor
                     text: "Setting: "
 
                     font.pixelSize: 20
@@ -85,13 +87,15 @@ Window {
                     anchors.verticalCenter: parent.verticalCenter
 
                     contentItem: IconLabel {
+                        font.pixelSize: 16
+                        font.bold: true
                         text: "Add New"
                     }
 
                     background.opacity: pressed ? 0.1 : 1
 
                     onClicked: {
-                        settingContainer.save_current_setting()
+                        settingContainer.add_new_setting()
                         settingComboBox.currentIndex = settingListModel.rowCount(
                                     ) - 1
                     }
@@ -117,15 +121,14 @@ Window {
 
                     if (settingToModify) {
                         itemAtIndex(0).setValue(settingToModify.head)
-                        itemAtIndex(0).setHeadRestToggle(
-                                    settingToModify.isHeadAttached)
+                        itemAtIndex(0).setHeadRestToggle(settingToModify.isHeadAttached)
                         itemAtIndex(1).setValue(settingToModify.back)
                         itemAtIndex(2).setValue(settingToModify.foot)
                         itemAtIndex(3).setValue(settingToModify.hardness)
                     }
                 }
 
-                function save_current_setting() {
+                function add_new_setting() {
                     settingListModel.addSetting(itemAtIndex(0).value,
                                                 itemAtIndex(0).toggled,
                                                 itemAtIndex(1).value,
@@ -134,10 +137,11 @@ Window {
                 }
 
                 delegate: Item {
-                    readonly property bool isHeadRole: index === 0
+                    readonly property bool isHead: index === 0
+                    readonly property bool isHardness: index === 3
 
                     readonly property real value: valueSlider.value
-                    readonly property bool toggled: !isHeadRole
+                    readonly property bool toggled: !isHead
                                                     || headRestToggleButton.toggled
 
                     function setValue(new_value) {
@@ -162,7 +166,7 @@ Window {
                             left: parent.left
                         }
 
-                        color: "black"
+                        color: favColor
 
                         font.pixelSize: 20
                         font.bold: true
@@ -210,7 +214,6 @@ Window {
                             color: headRestToggleButton.toggled ? "green" : "red"
                         }
 
-
                         onClicked: toggled = !toggled
 
                         onToggledChanged: {
@@ -231,13 +234,12 @@ Window {
                             right: parent.right
                         }
 
-                        enabled: !isHeadRole || headRestToggleButton.toggled
+                        enabled: !isHead || headRestToggleButton.toggled
 
                         from: 0
 
-                        to: isHeadRole ? 40 : (index === 1
-                                               || index === 2 ? 60 : (index === 3 ? 10 : 100))
-                        unit: index === 1 || index === 2 ? "°" : ""
+                        to: isHead ? 40 : (isHardness ? 10 : 60)
+                        unit: isHead || isHardness  ? "" : "°"
 
                         value: to / 2
 

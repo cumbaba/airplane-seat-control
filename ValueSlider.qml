@@ -41,6 +41,13 @@ Slider {
         font.bold: true
     }
 
+    Rectangle {
+        z: 1
+        anchors.fill: parent
+        opacity: enabled ? 0 : 0.8
+        color: "white"
+    }
+
     background: Rectangle {
         x: control.leftPadding
         y: control.topPadding + control.availableHeight / 2 - height / 2
@@ -55,13 +62,6 @@ Slider {
             height: parent.height
             radius: parent.radius
             color: "#05164D"
-        }
-
-        Rectangle {
-            z: 1
-            anchors.fill: parent
-            opacity: enabled ? 0 : 0.8
-            color: "white"
         }
 
         gradient: Gradient {
@@ -93,19 +93,12 @@ Slider {
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 bottom: parent.top
-                bottomMargin: 6
+                bottomMargin: 4
             }
 
-            font.pixelSize: 12
+            font.pixelSize: 18
             font.bold: true
             visible: pressed
-        }
-
-        Rectangle {
-            z: 1
-            anchors.fill: parent
-            opacity: enabled ? 0 : 0.8
-            color: "white"
         }
     }
 }
