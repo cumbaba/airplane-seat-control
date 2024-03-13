@@ -6,8 +6,8 @@ Window {
     width: 640
     height: 480
 
-    minimumWidth: 440
-    minimumHeight: 400
+    minimumWidth: 640
+    minimumHeight: 480
 
     visible: true
     title: qsTr("Airplane Seat Control")
@@ -15,26 +15,18 @@ Window {
     Rectangle {
 
         width: 440
-        height: 400
+        height: column.height
 
         anchors.centerIn: parent
 
-        border {
-            color: "green"
-            width: 1
-        }
-
         Column {
-            padding: 10
-            width: 350
-
-            anchors.horizontalCenter: parent.horizontalCenter
+            id: column
+            width: parent.width
 
             Row {
                 id: modelSelector
 
                 height: settingComboBox.height
-                anchors.horizontalCenter: parent.horizontalCenter
 
                 spacing: 50
 
@@ -48,6 +40,7 @@ Window {
                     text: "Setting: "
 
                     font.pixelSize: 20
+                    font.bold: true
 
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignLeft
@@ -64,7 +57,17 @@ Window {
 
                     contentItem: Text {
                         text: settingComboBox.currentIndex
-                              < 0 ? "please select" : settingComboBox.currentIndex
+                              < 0 ? "Select" : "Setting "
+                                    + (settingComboBox.currentIndex + 1)
+                    }
+
+                    delegate: ItemDelegate {
+                        width: ListView.view.width
+                        text: "Setting " + (index + 1)
+                        palette.text: settingComboBox.palette.text
+                        palette.highlightedText: settingComboBox.palette.highlightedText
+                        font.bold: settingComboBox.currentIndex === index
+                        highlighted: settingComboBox.highlightedIndex === index
                     }
 
                     currentIndex: -1
@@ -75,25 +78,24 @@ Window {
                         }
                     }
                 }
-            }
 
+                Button {
+                    height: 40
+                    width: 140
 
-            Button {
-                height: 40
-                width: 300
+                    anchors.verticalCenter: parent.verticalCenter
 
-                anchors.horizontalCenter: parent.horizontalCenter
+                    contentItem: IconLabel {
+                        text: "Add New"
+                    }
 
-                contentItem: IconLabel {
-                    text: "Add New"
-                }
+                    background.opacity: pressed ? 0.1 : 1
 
-                background.opacity: pressed ? 0.1 : 1
-
-                onClicked: {
-                    settingContainer.save_current_setting()
-                    settingComboBox.currentIndex = settingListModel.rowCount(
-                                ) - 1
+                    onClicked: {
+                        settingContainer.save_current_setting()
+                        settingComboBox.currentIndex = settingListModel.rowCount(
+                                    ) - 1
+                    }
                 }
             }
 
@@ -104,6 +106,8 @@ Window {
 
                 height: 300
                 width: parent.width
+
+                spacing: 10
 
                 // exclude the is_head_attached flag
                 model: 4
@@ -131,10 +135,10 @@ Window {
                 }
 
                 delegate: Item {
-                    readonly property bool is_head_role: index === 0
+                    readonly property bool isHeadRole: index === 0
 
                     readonly property real value: valueSlider.value
-                    readonly property bool checked: !is_head_role
+                    readonly property bool checked: !isHeadRole
                                                     || checkbox.checked
 
                     function setValue(new_value) {
@@ -162,6 +166,8 @@ Window {
                         color: "black"
 
                         font.pixelSize: 20
+                        font.bold: true
+
                         text: get_label() + ":"
 
                         verticalAlignment: Text.AlignVCenter
@@ -170,11 +176,11 @@ Window {
                         function get_label() {
                             switch (index) {
                             case 0:
-                                return "Head"
+                                return "Headrest"
                             case 1:
-                                return "Back"
+                                return "Backrest"
                             case 2:
-                                return "Foot"
+                                return "Footrest"
                             case 3:
                                 return "Hardness"
                             }
@@ -185,41 +191,29 @@ Window {
                         id: checkbox
 
                         width: 30
-                        height: 40
+                        height: 30
 
                         anchors {
                             verticalCenter: parent.verticalCenter
                             right: valueSlider.left
-                            rightMargin: 20
+                            rightMargin: 60
                         }
 
-                        visible: is_head_role
+                        visible: isHeadRole
+                        checked: true
 
-                        Rectangle {
-                            border {
-                                width: 1
-                                color: checkbox.checked ? "lightgray" : "blue"
+                        contentItem: Rectangle {
+                            radius: 3
+                            anchors.fill: parent
+
+                            Label {
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                text: checkbox.checked ? "ON" : "OFF"
+                                font.pointSize: 20
+                                font.bold: true
+                                color: checkbox.checked ? "green" : "red"
                             }
-
-                            color: "transparent"
-                            anchors.fill: checkbox.indicator
-                        }
-
-                        Label {
-                            height: 20
-                            width: 30
-
-                            visible: !checkbox.checked
-
-                            anchors {
-                                verticalCenter: checkbox.indicator.verticalCenter
-                                top: checkbox.indicator.bottom
-                            }
-
-                            color: "black"
-                            font.pixelSize: 16
-
-                            text: "(detached)"
                         }
 
                         onCheckStateChanged: {
@@ -229,7 +223,7 @@ Window {
                         }
                     }
 
-                    Slider {
+                    ValueSlider {
                         id: valueSlider
 
                         width: 240
@@ -240,12 +234,15 @@ Window {
                             right: parent.right
                         }
 
-                        enabled: !is_head_role || checkbox.checked
+                        enabled: !isHeadRole || checkbox.checked
 
                         from: 0
-                        to: 100
 
-                        value: 50
+                        to: isHeadRole ? 40 : (index === 1 || index === 2 ? 60 : (index === 3 ? 10 : 100))
+                        stepSize: index === 3 ? 0.1 : 1
+                        unit: index === 1 || index === 2 ? "°" : ""
+
+                        value: to / 2
 
                         onValueChanged: {
                             if (settingContainer.settingToModify) {
