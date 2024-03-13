@@ -8,13 +8,23 @@
 class SettingListModel : public QAbstractListModel {
   Q_OBJECT
 public:
+  enum SettingRoles {
+    Head = Qt::UserRole + 1,
+    Back,
+    Foot,
+    Hardness,
+    IsHeadAttached
+  };
+
   SettingListModel(QObject *parent = nullptr);
-  ~SettingListModel();
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  QHash<int, QByteArray> roleNames() const override;
 
   QVariant data(const QModelIndex &index,
                 int role = Qt::DisplayRole) const override;
+  bool setData(const QModelIndex &index, const QVariant &value,
+               int role = Qt::EditRole) override;
 
   QList<UserSetting> getModelData() const;
 
@@ -24,7 +34,7 @@ public:
                               uint foot, uint hardness);
 
 private:
-  QList<UserSetting *> m_settings;
+  QList<UserSetting> m_settings;
 };
 
 #endif // USERSettingListModel_H

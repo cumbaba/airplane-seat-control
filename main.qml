@@ -15,7 +15,6 @@ Window {
     title: qsTr("Airplane Seat Control")
 
     Rectangle {
-
         width: 440
         height: column.height
 
@@ -23,6 +22,7 @@ Window {
 
         Column {
             id: column
+
             width: parent.width
 
             Row {
@@ -46,6 +46,27 @@ Window {
                     horizontalAlignment: Text.AlignLeft
                 }
 
+
+                // This component is only used for editing the model through the role names
+                ListView {
+                    id: editorListView
+
+                    visible: false
+
+                    model: settingListModel
+                    delegate: ItemDelegate {
+                        property variant setting: model
+                    }
+
+                    currentIndex: settingSelector.currentIndex
+
+                    onCurrentIndexChanged: {
+                        if (currentIndex >= 0) {
+                            settingContainer.load_setting()
+                        }
+                    }
+                }
+
                 ComboBox {
                     id: settingSelector
 
@@ -54,8 +75,8 @@ Window {
                     model: settingListModel
 
                     contentItem: Text {
-                        text: settingSelector.currentIndex
-                              < 0 ? "Please select" : "Setting " + (settingSelector.currentIndex + 1)
+                        text: settingSelector.currentIndex < 0 ? "Please select"
+                                                               : "Setting "+ (settingSelector.currentIndex + 1)
                     }
 
                     delegate: ItemDelegate {
@@ -68,12 +89,6 @@ Window {
                     }
 
                     currentIndex: -1
-
-                    onCurrentIndexChanged: {
-                        if (currentIndex >= 0) {
-                            settingContainer.load_setting(currentIndex)
-                        }
-                    }
                 }
 
                 Button {
@@ -92,16 +107,13 @@ Window {
 
                     onClicked: {
                         settingContainer.add_new_setting()
-                        settingSelector.currentIndex = settingListModel.rowCount(
-                                    ) - 1
+                        settingSelector.currentIndex = settingListModel.rowCount() - 1
                     }
                 }
             }
 
             ListView {
                 id: settingContainer
-
-                property var settingToModify: undefined
 
                 height: 300
                 width: parent.width
@@ -111,16 +123,18 @@ Window {
 
                 model: 4
 
-                function load_setting(modelIndex) {
-                    settingToModify = settingListModel.data(
-                                settingListModel.index(modelIndex, 0))
-
-                    if (settingToModify) {
-                        itemAtIndex(0).setValue(settingToModify.head)
-                        itemAtIndex(0).setHeadRestToggle(settingToModify.isHeadAttached)
-                        itemAtIndex(1).setValue(settingToModify.back)
-                        itemAtIndex(2).setValue(settingToModify.foot)
-                        itemAtIndex(3).setValue(settingToModify.hardness)
+                function load_setting() {
+                    if (editorListView.currentIndex >= 0) {
+                        itemAtIndex(0).setValue(
+                                    editorListView.currentItem.setting.head)
+                        itemAtIndex(0).setHeadRestToggle(
+                                    editorListView.currentItem.setting.is_head_attached)
+                        itemAtIndex(1).setValue(
+                                    editorListView.currentItem.setting.back)
+                        itemAtIndex(2).setValue(
+                                    editorListView.currentItem.setting.foot)
+                        itemAtIndex(3).setValue(
+                                    editorListView.currentItem.setting.hardness)
                     }
                 }
 
@@ -213,8 +227,8 @@ Window {
                         onClicked: toggled = !toggled
 
                         onToggledChanged: {
-                            if (settingContainer.settingToModify) {
-                                settingContainer.settingToModify.isHeadAttached = toggled
+                            if (editorListView.currentIndex >= 0) {
+                                editorListView.currentItem.setting.is_head_attached = toggled
                             }
                         }
                     }
@@ -235,22 +249,22 @@ Window {
                         from: 0
 
                         to: isHead ? 40 : (isHardness ? 10 : 60)
-                        unit: isHead || isHardness  ? "" : "°"
+                        unit: isHead || isHardness ? "" : "°"
 
                         onValueChanged: {
-                            if (settingContainer.settingToModify) {
+                            if (editorListView.currentIndex >= 0) {
                                 switch (index) {
                                 case 0:
-                                    settingContainer.settingToModify.head = value
+                                    editorListView.currentItem.setting.head = value
                                     break
                                 case 1:
-                                    settingContainer.settingToModify.back = value
+                                    editorListView.currentItem.setting.back = value
                                     break
                                 case 2:
-                                    settingContainer.settingToModify.foot = value
+                                    editorListView.currentItem.setting.foot = value
                                     break
                                 case 3:
-                                    settingContainer.settingToModify.hardness = value
+                                    editorListView.currentItem.setting.hardness = value
                                     break
                                 }
                             }
