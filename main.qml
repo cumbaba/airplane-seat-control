@@ -7,7 +7,12 @@ Window {
     height: 480
 
     minimumWidth: 640
+    maximumWidth: 640
+
     minimumHeight: 480
+    maximumHeight: 480
+
+    flags: Qt.FramelessWindowHint
 
     visible: true
     title: qsTr("Airplane Seat Control")
@@ -24,31 +29,13 @@ Window {
             width: parent.width
 
             Row {
-                height: settingSelector.height
-
+                height: settingSelector.height + 40
                 spacing: 50
 
-                Label {
-                    width: 50
-                    height: parent.height
-
-                    anchors.verticalCenter: settingSelector.verticalCenter
-
-                    color: favColor
-                    text: "Setting: "
-
-                    font.pixelSize: 20
-                    font.bold: true
-
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignLeft
-                }
-
-
-                // This component is only used for editing the model through the role names
                 ListView {
                     id: editorListView
 
+                    // This component is only used for editing the model through the role names
                     visible: false
 
                     model: settingListModel
@@ -65,10 +52,27 @@ Window {
                     }
                 }
 
+                Label {
+                    width: 50
+                    height: parent.height
+
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    color: favColor
+                    text: "Setting: "
+
+                    font.pixelSize: 20
+                    font.bold: true
+
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+                }
+
                 ComboBox {
                     id: settingSelector
 
                     width: 150
+                    anchors.verticalCenter: parent.verticalCenter
 
                     model: settingListModel
 
