@@ -1,5 +1,5 @@
-#ifndef USERSETTINGLISTMODEL_H
-#define USERSETTINGLISTMODEL_H
+#ifndef USERSettingListModel_H
+#define USERSettingListModel_H
 
 #include <QAbstractListModel>
 
@@ -8,23 +8,12 @@
 class SettingListModel : public QAbstractListModel {
   Q_OBJECT
 public:
-  enum SettingRoles {
-    Head = Qt::UserRole + 1,
-    Back,
-    Foot,
-    Hardness,
-    IsHeadAttached
-  };
-  Q_ENUMS(SettingRoles)
-
   SettingListModel(QObject *parent = nullptr);
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
   QVariant data(const QModelIndex &index,
                 int role = Qt::DisplayRole) const override;
-
-  QHash<int, QByteArray> roleNames() const override;
 
   QList<UserSetting> getModelData() const;
 
@@ -34,9 +23,7 @@ public:
                               uint foot, uint hardness);
 
 private:
-  void loadSettings();
-
-  QList<UserSetting> m_settings;
+  QList<UserSetting *> m_settings;
 };
 
-#endif // USERSETTINGLISTMODEL_H
+#endif // USERSettingListModel_H

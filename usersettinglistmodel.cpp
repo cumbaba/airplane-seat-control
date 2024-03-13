@@ -11,46 +11,33 @@ QVariant SettingListModel::data(const QModelIndex &index, int role) const {
   if (!index.isValid() || index.row() >= m_settings.size())
     return QVariant();
 
-  const UserSetting &setting = m_settings.at(index.row());
-
-  switch (role) {
-  case Head:
-    return setting.head;
-  case Back:
-    return setting.back;
-  case Foot:
-    return setting.foot;
-  case Hardness:
-    return setting.hardness;
-  case IsHeadAttached:
-    return setting.is_head_attached;
-  default:
-    return QVariant();
+  if (role == Qt::DisplayRole) {
+    return QVariant::fromValue(m_settings[index.row()]);
   }
+
+  return QVariant();
 }
 
-QHash<int, QByteArray> SettingListModel::roleNames() const {
-  QHash<int, QByteArray> roles;
-  roles[Head] = "head";
-  roles[Back] = "back";
-  roles[Foot] = "foot";
-  roles[Hardness] = "hardness";
-  roles[IsHeadAttached] = "is_head_attached";
-  return roles;
-}
+QList<UserSetting> SettingListModel::getModelData() const {
+  QList<UserSetting> res;
 
-QList<UserSetting> SettingListModel::getModelData() const { return m_settings; }
+  for (auto *s : m_settings) {
+    res.push_back(*s);
+  }
+
+  return res;
+}
 
 void SettingListModel::addSetting(uint head, bool is_head_attached, uint back,
                                   uint foot, uint hardness) {
   beginInsertRows(QModelIndex(), rowCount(), rowCount());
 
-  UserSetting s;
-  s.head = head;
-  s.back = back;
-  s.foot = foot;
-  s.hardness = hardness;
-  s.is_head_attached = is_head_attached;
+  UserSetting *s = new UserSetting();
+  s->setHead(head);
+  s->setBack(back);
+  s->setFoot(foot);
+  s->setHardness(hardness);
+  s->setIsHeadAttached(is_head_attached);
 
   m_settings.append(s);
 
@@ -60,7 +47,12 @@ void SettingListModel::addSetting(uint head, bool is_head_attached, uint back,
 void SettingListModel::setModelData(const QList<UserSetting> &settings) {
   beginResetModel();
 
-  m_settings = settings;
+  while (!m_settings.empty())
+    delete m_settings.front(), m_settings.pop_front();
+
+  for (auto &s : settings) {
+    m_settings.push_back(new UserSetting(s));
+  }
 
   endResetModel();
 }

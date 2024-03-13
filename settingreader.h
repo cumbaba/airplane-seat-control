@@ -20,11 +20,11 @@ public:
     for (int i = 0; i < settingList.size(); ++i) {
       settings.setArrayIndex(i);
 
-      settings.setValue("is_head_attached", settingList[i].is_head_attached);
-      settings.setValue("head", settingList[i].head);
-      settings.setValue("back", settingList[i].back);
-      settings.setValue("foot", settingList[i].foot);
-      settings.setValue("hardness", settingList[i].hardness);
+      settings.setValue("is_head_attached", settingList[i].isHeadAttached());
+      settings.setValue("head", settingList[i].head());
+      settings.setValue("back", settingList[i].back());
+      settings.setValue("foot", settingList[i].foot());
+      settings.setValue("hardness", settingList[i].hardness());
     }
     settings.endArray();
 
@@ -42,11 +42,11 @@ public:
       settings.setArrayIndex(i);
       UserSetting s;
 
-      s.is_head_attached = settings.value("is_head_attached").toBool();
-      s.head = settings.value("head").toUInt();
-      s.foot = settings.value("foot").toUInt();
-      s.back = settings.value("back").toUInt();
-      s.hardness = settings.value("hardness").toUInt();
+      s.setIsHeadAttached(settings.value("is_head_attached").toBool());
+      s.setHead(settings.value("head").toUInt());
+      s.setFoot(settings.value("foot").toUInt());
+      s.setBack(settings.value("back").toUInt());
+      s.setHardness(settings.value("hardness").toUInt());
 
       readSettings.append(s);
     }
