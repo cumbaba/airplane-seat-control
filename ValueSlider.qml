@@ -14,6 +14,8 @@ Slider {
     value: to / 2
 
     Label {
+        id: leftLabel
+
         text: from + unit
 
         anchors {
@@ -28,6 +30,8 @@ Slider {
     }
 
     Label {
+        id: rightLabel
+
         text: to + unit
 
         anchors {
@@ -43,7 +47,14 @@ Slider {
 
     Rectangle {
         z: 1
-        anchors.fill: parent
+
+        height: parent.height
+
+        anchors {
+            left: leftLabel.left
+            right: rightLabel.right
+        }
+
         opacity: enabled ? 0 : 0.8
         color: "white"
     }

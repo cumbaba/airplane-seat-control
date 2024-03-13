@@ -38,7 +38,7 @@ Window {
 
                     model: settingListModel
                     delegate: ItemDelegate {
-                        property variant setting: model
+                        property var setting: model
                     }
 
                     currentIndex: settingSelector.currentIndex
@@ -209,7 +209,7 @@ Window {
                         width: 90
                         height: 40
 
-                        visible: index === 0
+                        visible: isHead
 
                         anchors {
                             verticalCenter: parent.verticalCenter
