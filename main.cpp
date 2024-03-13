@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include <QColor>
 #include <QQmlContext>
 
 #include "settingreader.h"
@@ -30,6 +31,7 @@ int main(int argc, char *argv[]) {
   });
 
   engine.rootContext()->setContextProperty("settingListModel", &model);
+  engine.rootContext()->setContextProperty("favColor", QColor(5, 22, 77));
   engine.load(url);
 
   return app.exec();

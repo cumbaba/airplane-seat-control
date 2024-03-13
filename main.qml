@@ -3,8 +3,6 @@ import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
 Window {
-    readonly property color favColor: "#05164D"
-
     width: 640
     height: 480
 
@@ -100,6 +98,7 @@ Window {
                     contentItem: IconLabel {
                         font.pixelSize: 16
                         font.bold: true
+                        color: favColor
                         text: "Add New"
                     }
 

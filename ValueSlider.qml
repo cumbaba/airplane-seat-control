@@ -59,7 +59,7 @@ Slider {
             width: control.visualPosition * parent.width
             height: parent.height
             radius: parent.radius
-            color: "#05164D"
+            color: favColor
         }
 
         gradient: Gradient {
